@@ -1,7 +1,9 @@
 require('dotenv').config()
 const express = require('express')
+const Article = require('./models/article')
 const cors = require('cors')
 const app = express()
+
 
 const consoleLogger = (req , res , next) =>{
     console.log({"Body" : req.body})
@@ -30,6 +32,18 @@ app.use(errorHandler)
 
 app.get('/' , (req,res)=>{
     res.send('<h1>backend</h1>')
+})
+
+const newArticle = new Article({
+    title : 'Test',
+    summary : 'testes'
+})
+
+newArticle.save().then(res =>{
+    console.log('article saved')
+})
+.catch(err =>{
+    console.log(err)
 })
 
 
