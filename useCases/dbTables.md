@@ -20,6 +20,7 @@
    <ul>
   <li>Title</li>
   <li>Summary</li>
+  <li>Tagline(for easier classification)</li>
   <li>Contributor(a user row object)</li>
   <li>Publish datetime</li>
   <li>Reference links(for viewers to dive deeper)</li>
