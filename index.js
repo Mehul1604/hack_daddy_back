@@ -34,17 +34,17 @@ app.get('/' , (req,res)=>{
     res.send('<h1>backend</h1>')
 })
 
-const newArticle = new Article({
-    title : 'Test',
-    summary : 'testes'
-})
+// const newArticle = new Article({
+//     title : 'Test',
+//     summary : 'testes'
+// })
 
-newArticle.save().then(res =>{
-    console.log('article saved')
-})
-.catch(err =>{
-    console.log(err)
-})
+// newArticle.save().then(res =>{
+//     console.log('article saved')
+// })
+// .catch(err =>{
+//     console.log(err)
+// })
 
 
 app.use(unknownEndpoint)
