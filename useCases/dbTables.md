@@ -20,6 +20,8 @@
    <ul>
   <li>Title</li>
   <li>Summary</li>
+  <li>Contributor(a user row object)</li>
+  <li>Publish datetime</li>
   <li>Reference links(for viewers to dive deeper)</li>
   <li>Comments({user : , priority : , body : [] , replies : [{user : , body : }]})</li>
   <li>Report Value(Numeric{reports * rating of each report})</li>
