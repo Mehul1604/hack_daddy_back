@@ -15,8 +15,10 @@ const consoleLogger = (req , res , next) =>{
 
 const errorHandler = (err , req , res , next) =>{
     console.log(err.message)
-    return res.status(400).send({error : err.message})
-
+    if(err.name === 'CastError'){
+        return res.status(400).send({error : 'validation of a type failed'})
+    }
+    
     next(err)
 }
 
@@ -34,17 +36,30 @@ app.get('/' , (req,res)=>{
     res.send('<h1>backend</h1>')
 })
 
-// const newArticle = new Article({
-//     title : 'Test',
-//     summary : 'testes'
-// })
+const newArticle = new Article({
+    
+    title : 'Test3',
+    summary : 'testes',
+    tagline : 'Movies',
+    ref_links : ['google link'],
+    comments : [{
+        user : 'Mehul',
+        priority : 1000,
+        body : 'yas',
+        replies : [{
+            user : 'Aakash',
+            body : 'No'
+        }]
+    }],
+    report_val : 22.3
+})
 
-// newArticle.save().then(res =>{
-//     console.log('article saved')
-// })
-// .catch(err =>{
-//     console.log(err)
-// })
+newArticle.save().then(res =>{
+    console.log('article saved')
+})
+.catch(err =>{
+    console.log(err)
+})
 
 
 app.use(unknownEndpoint)

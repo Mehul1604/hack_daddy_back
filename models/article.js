@@ -15,13 +15,47 @@ mongoose.connect(url , {useNewUrlParser : true , useUnifiedTopology : true})
 const articleSchema = new mongoose.Schema({
     title : {
         type : String,
-        required : true
+        required : true,
+        maxlength : 40
+        
     },
     summary : {
         type : String,
         required : true,
         maxlength : 400
+    },
+    tagline : {
+        type : String,
+        required : true
+    },
+    contributor : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User',
+        default : '000000000000000000000000'
+       
+    },
+    publish_date : {
+        type : mongoose.Schema.Types.Date,
+        default : Date.now()
+    },
+    ref_links : {
+        type : mongoose.Schema.Types.Array,
+        default : []
+    },
+    comments : [{
+        user : mongoose.Schema.Types.String,
+        priority : mongoose.Schema.Types.Number,
+        body : mongoose.Schema.Types.String,
+        replies : [{
+            user : mongoose.Schema.Types.String,
+            body : mongoose.Schema.Types.String
+        }]
+    }],
+    report_val : {
+        type : mongoose.Schema.Types.Number,
+        default : 0
     }
+
 
 })
 
