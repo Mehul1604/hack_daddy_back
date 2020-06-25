@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express')
-const Article = require('./models/article')
+const articleRouter = require('./controllers/article_routes')
 const cors = require('cors')
 const app = express()
 
@@ -31,38 +31,41 @@ app.use(cors())
 app.use(express.json())
 app.use(consoleLogger)
 app.use(errorHandler)
+app.use('/articles' , articleRouter)
+
 
 app.get('/' , (req,res)=>{
     res.send('<h1>backend</h1>')
 })
 
-const newArticle = new Article({
+// const newArticle = new Article({
     
-    title : 'Test3',
-    summary : 'testes',
-    tagline : 'Movies',
-    ref_links : ['google link'],
-    comments : [{
-        user : 'Mehul',
-        priority : 1000,
-        body : 'yas',
-        replies : [{
-            user : 'Aakash',
-            body : 'No'
-        }]
-    }],
-    report_val : 22.3
-})
+//     title : 'Test3',
+//     summary : 'testes',
+//     tagline : 'Movies',
+//     ref_links : ['google link'],
+//     comments : [{
+//         user : 'Mehul',
+//         priority : 1000,
+//         body : 'yas',
+//         replies : [{
+//             user : 'Aakash',
+//             body : 'No'
+//         }]
+//     }],
+//     report_val : 22.3
+// })
 
-newArticle.save().then(res =>{
-    console.log('article saved')
-})
-.catch(err =>{
-    console.log(err)
-})
+// newArticle.save().then(res =>{
+//     console.log('article saved')
+// })
+// .catch(err =>{
+//     console.log(err)
+// })
 
 
 app.use(unknownEndpoint)
+
 
 
 const PORT = process.env.PORT || 8000
