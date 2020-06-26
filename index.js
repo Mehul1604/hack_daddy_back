@@ -1,9 +1,10 @@
 require('dotenv').config()
 const express = require('express')
 const articleRouter = require('./controllers/article_routes')
+const userRouter = require('./controllers/user_routes')
 const cors = require('cors')
+const User = require('./models/user')
 const app = express()
-
 
 const consoleLogger = (req , res , next) =>{
     console.log({"Body" : req.body})
@@ -32,40 +33,31 @@ app.use(express.json())
 app.use(consoleLogger)
 app.use(errorHandler)
 app.use('/articles' , articleRouter)
-
-
+app.use('/user', userRouter)
 app.get('/' , (req,res)=>{
     res.send('<h1>backend</h1>')
 })
 
-// const newArticle = new Article({
-    
-//     title : 'Test3',
-//     summary : 'testes',
-//     tagline : 'Movies',
-//     ref_links : ['google link'],
-//     comments : [{
-//         user : 'Mehul',
-//         priority : 1000,
-//         body : 'yas',
-//         replies : [{
-//             user : 'Aakash',
-//             body : 'No'
-//         }]
-//     }],
-//     report_val : 22.3
-// })
+app.use(unknownEndpoint)
 
-// newArticle.save().then(res =>{
-//     console.log('article saved')
+//const newUser = new User({
+//    name : 'Aakasnoooo',
+//    email : 'aakastest',
+//    username : 'megool',
+//    password : 'raghavisgay',
+//   role : true,
+//    rating : 1000,
+//    follow_id : ['why','who'],
+//    contributor_id : ['why(2)']
+//    
+//})
+//
+// newUser.save().then(res =>{
+//    console.log(newUser)
 // })
 // .catch(err =>{
 //     console.log(err)
-// })
-
-
-app.use(unknownEndpoint)
-
+//})
 
 
 const PORT = process.env.PORT || 8000
