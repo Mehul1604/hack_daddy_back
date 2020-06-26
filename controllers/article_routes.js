@@ -10,7 +10,16 @@ articleRouter.get('/' , (req,res) =>{
 
 articleRouter.get('/:id' ,(req,res) =>{
     Article.findById(req.params.id).then(result =>{
-        res.json(result)
+        if(result){
+            res.json(result)
+        }
+        else{
+            res.status(404).json({'error404' : 'incorrect article id / article no longer exists'})
+        }
+        
+    })
+    .catch(err =>{
+        res.json(err)
     })
 })
 

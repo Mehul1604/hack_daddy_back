@@ -4,14 +4,14 @@ const url  = process.env.MONGODB_URI
 const bcrypt = require('bcrypt')
 const SALT_WORK_FACTOR = 10
 
-console.log('connecting to daddy..' , url)
-mongoose.connect(url , {useNewUrlParser : true , useUnifiedTopology : true})
-.then(res =>{
-    console.log('connected to daddy!')
-})
-.catch(err =>{
-    console.log('connection failed :(' , err.message)
-})
+// console.log('connecting to daddy..' , url)
+// mongoose.connect(url , {useNewUrlParser : true , useUnifiedTopology : true})
+// .then(res =>{
+//     console.log('connected to daddy!')
+// })
+// .catch(err =>{
+//     console.log('connection failed :(' , err.message)
+// })
 
 const userSchema = new mongoose.Schema({
     name : {

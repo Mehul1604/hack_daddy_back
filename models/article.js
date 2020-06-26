@@ -43,11 +43,11 @@ const articleSchema = new mongoose.Schema({
         default : []
     },
     comments : [{
-        user : mongoose.Schema.Types.String,
+        user : mongoose.Schema.Types.ObjectId,
         priority : mongoose.Schema.Types.Number,
         body : mongoose.Schema.Types.String,
         replies : [{
-            user : mongoose.Schema.Types.String,
+            user : mongoose.Schema.Types.ObjectId,
             body : mongoose.Schema.Types.String
         }]
     }],
