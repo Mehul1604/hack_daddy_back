@@ -1,6 +1,17 @@
 const articleRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 
 const Article = require('../models/article') 
+const User = require('../models/user') 
+
+const getToken = (request) =>{
+    const Auth = request.get('authorization')
+        if(Auth && Auth.toLowerCase().startsWith('bearer ')){
+            return Auth.substring(7)
+        }
+
+        return null
+}
 
 articleRouter.get('/' , (req,res) =>{
     Article.find({}).then(result =>{
@@ -9,7 +20,7 @@ articleRouter.get('/' , (req,res) =>{
 })
 
 articleRouter.get('/:id' ,(req,res) =>{
-    Article.findById(req.params.id).then(result =>{
+    Article.findById(req.params.id).populate('contributor').then(result =>{
         if(result){
             res.json(result)
         }
@@ -23,8 +34,18 @@ articleRouter.get('/:id' ,(req,res) =>{
     })
 })
 
-articleRouter.post('/' ,(req,res) =>{
+articleRouter.post('/' ,async (req,res) =>{
     const body = req.body
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token , process.env.SECRET_TOKEN)
+    if(!token || !decodedToken.id){
+        return res.status(401).json({
+            error : 'token is missing or invalid'
+        })
+    }
+
+    const userWhoPosted = await User.findById(decodedToken.id)
+
     const newArticle = new Article({
     
     title : body.title,
@@ -33,16 +54,17 @@ articleRouter.post('/' ,(req,res) =>{
     ref_links : body.ref_links,
     comments : body.comments,
     report_val : body.report_val,
-    contributor : body.contributor
+    contributor : userWhoPosted._id
 
 })
 
-    newArticle.save().then(result =>{
-        res.json(result)
-        console.log('article saved')
-    })
-    .catch(err =>{
-        console.log(err)
+    const result = await newArticle.save()
+    console.log("article saved")
+    console.log(result)
+
+    User.findByIdAndUpdate(userWhoPosted._id , {$push : {contributor_id : result._id}} , {new : true}).then(updated =>{
+        console.log("updated user with this article" , updated)
+        res.json(updated)
     })
 })
 

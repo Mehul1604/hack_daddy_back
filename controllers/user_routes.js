@@ -9,7 +9,7 @@ userRouter.get('/' , (req,res) =>{
 })
 
 userRouter.get('/:id' ,(req,res) =>{
-    User.findById(req.params.id).then(result =>{
+    User.findById(req.params.id).populate('contributor_id follow_id').then(result =>{
         res.json(result)
     })
 })
@@ -25,7 +25,7 @@ userRouter.post('/' ,(req,res) =>{
     role : body.role,
     rating : body.rating,
     follow_id : body.follow_id,
-    contributor_id : body.contributor_id,
+    contributor_id : body.contributor_id
 
 })
 

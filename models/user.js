@@ -47,15 +47,21 @@ const userSchema = new mongoose.Schema({
         default : 1000
     },
 
-    follow_id : {
-        type : mongoose.Schema.Types.Array,
-        default : []
-    },
-
-    contributor_id :{
-        type : mongoose.Schema.Types.Array,
+    follow_id : [
+        {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'Article',
         default : []
     }
+],
+
+    contributor_id : [
+        {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'Article',
+        default : []
+    }
+]
 })
 
 userSchema.set('toJSON', {
