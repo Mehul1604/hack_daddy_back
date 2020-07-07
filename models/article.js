@@ -54,6 +54,10 @@ const articleSchema = new mongoose.Schema({
     report_val : {
         type : mongoose.Schema.Types.Number,
         default : 0
+    },
+    followers : {
+        type : mongoose.Schema.Types.Number,
+        default : 0
     }
 
 

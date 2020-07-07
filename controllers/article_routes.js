@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const Article = require('../models/article') 
 const User = require('../models/user') 
+const { update } = require('../models/article')
 
 const getToken = (request) =>{
     const Auth = request.get('authorization')
@@ -64,15 +65,82 @@ articleRouter.post('/' ,async (req,res) =>{
 
     User.findByIdAndUpdate(userWhoPosted._id , {$push : {contributor_id : result._id}} , {new : true}).then(updated =>{
         console.log("updated user with this article" , updated)
-        res.json(updated)
+        res.json({
+            newArticle : result,
+            updatedUser : updated
+        })
     })
 })
 
-articleRouter.delete('/:id' ,(req,res) =>{
-    Article.findByIdAndDelete(req.params.id).then(result =>{
-        res.send('<h2>Article deleted</h2>').redirect('../')
-        
+articleRouter.put('/follow/:articleId' , async (req,res) =>{
+    const body = req.body
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token , process.env.SECRET_TOKEN)
+    if(!token || !decodedToken.id){
+        return res.status(401).json({
+            error : 'token is missing or invalid'
+        })
+    }
+
+    const UserWhoFollowed = await User.findById(decodedToken.id)
+    const ArticleFollowed = await Article.findById(req.params.articleId)
+    UserWhoFollowed.follow_id.push(ArticleFollowed._id)
+    const updatedUser = await UserWhoFollowed.save()
+    ArticleFollowed.followers = ArticleFollowed.followers + 1
+    const updatedArticle = await ArticleFollowed.save()
+    res.json({
+        updatedArticle : updatedArticle,
+        updatedUser : updatedUser
     })
+})
+
+articleRouter.delete('/:id' ,async (req,res) =>{
+
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token , process.env.SECRET_TOKEN)
+    if(!token || !decodedToken.id){
+        return res.status(401).json({
+            error : 'token is missing or invalid'
+        })
+    }
+
+    const UserWhoDeleted = await User.findById(decodedToken.id)
+    const ArticleToBeDeleted = await Article.findById(req.params.id)
+    console.log(UserWhoDeleted.contributor_id)
+    console.log('article to be deleted' , ArticleToBeDeleted)
+     UserWhoDeleted.contributor_id = UserWhoDeleted.contributor_id.filter(id =>{
+         return id.toString() !== (ArticleToBeDeleted._id).toString()
+     })
+    // console.log(typeof((UserWhoDeleted.contributor_id[2]).toString()))
+    // console.log(typeof((ArticleToBeDeleted._id).toString()))
+    // console.log(UserWhoDeleted.contributor_id[2].toString() === ArticleToBeDeleted._id.toString())
+
+    const updatedUser = await UserWhoDeleted.save()
+    await Article.findByIdAndDelete(ArticleToBeDeleted._id)
+
+    //await Article.findByIdAndDelete(req.params.id)
+    res.json({
+        message : 'deleted article',
+        updatedUser : updatedUser
+    })
+        
+})
+
+articleRouter.put('/reportValue/:id' , async (req,res) =>{
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token , process.env.SECRET_TOKEN)
+    if(!token || !decodedToken.id){
+        return res.status(401).json({
+            error : 'token is missing or invalid'
+        })
+    }
+
+    const ArticleToBeUpdated = await Article.findById(req.params.id)
+    const UserWhoReported = await User.findById(decodedToken.id)
+    ArticleToBeUpdated.report_val = ArticleToBeUpdated.report_val + (UserWhoReported.rating * 0.25) //SOME MATHS HERE
+    const updatedArticle = await ArticleToBeUpdated.save()
+    return res.json(updatedArticle)
+
 })
 
 articleRouter.put('/comment/:id',(req,res)=>{
