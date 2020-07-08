@@ -143,11 +143,27 @@ articleRouter.put('/reportValue/:id' , async (req,res) =>{
 
 })
 
-articleRouter.put('/comment/:id',(req,res)=>{
-    const newComment = req.body
+articleRouter.put('/comment/:id',async (req,res)=>{
+
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token , process.env.SECRET_TOKEN)
+    if(!token || !decodedToken.id){
+        return res.status(401).json({
+            error : 'token is missing or invalid'
+        })
+    }
+
+    const commentBody = req.body.comment
+    const UserWhoCommented = await User.findById(decodedToken.id)
+    const newComment = {
+        user : decodedToken.id,
+        priority : (UserWhoCommented.rating * 0.10),
+        body : commentBody,
+        replies : []
+    }
     Article.findByIdAndUpdate(req.params.id , {$push : {comments : newComment}} , {new : true}).then(result =>{
         console.log("comment added" , result)
-        res.json(result.comments[result.comments.length - 1])
+        res.json(result)
     })
 })
 
