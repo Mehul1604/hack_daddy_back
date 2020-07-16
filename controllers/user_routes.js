@@ -21,7 +21,7 @@ userRouter.get('/' , (req,res) =>{
     })
 })
 
-userRouter.get('/:id' ,(req,res) =>{
+userRouter.get('/getSingleUser' ,(req,res) =>{
 
     const token = getToken(req)
     const decodedUser = jwt.verify(token , process.env.SECRET_TOKEN)
@@ -30,7 +30,7 @@ userRouter.get('/:id' ,(req,res) =>{
             error : 'token is missing or invalid'
         })
     }
-    User.findById(req.params.id).populate('contributor_id follow_id').then(result =>{
+    User.findById(decodedUser.id).populate('contributor_id follow_id').then(result =>{
         res.json(result)
     })
 })
@@ -63,8 +63,7 @@ userRouter.post('/' ,(req,res) =>{
     email : body.email,
     username : body.username,
     password : body.password,
-    role : body.role,
-    rating : body.rating,
+    role : body.role
     
 
 })
