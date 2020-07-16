@@ -1,4 +1,4 @@
-# hack_daddy_back
+# Openion App Backend
 <ul>
   <li>Please check useCases folder for functionalities</li>
   <li>Routes are in the controller folder</li> 
